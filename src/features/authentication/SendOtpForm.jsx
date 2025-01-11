@@ -1,7 +1,7 @@
 import { useState } from "react"
 import TextField from "../../ui/TextField"
 
-const SendOtpForm = () => {
+const SendOTPForm = () => {
   const [phonenumber, setPhonenumber] = useState("")
 
   return (
@@ -21,4 +21,4 @@ const SendOtpForm = () => {
   )
 }
 
-export default SendOtpForm
+export default SendOTPForm
