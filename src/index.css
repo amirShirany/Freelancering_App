@@ -53,6 +53,25 @@
   }
 }
 
+@layer components {
+  .textField__input {
+    @apply w-full py-3 px-4 rounded-xl text-secondary-900 border hover:border-primary-500 focus:outline-none focus:border-primary-500 focus:bg-white focus:shadow-lg focus:shadow-primary-200 transition-all duration-300 ease-in-out;
+  }
+  .btn {
+    @apply px-4 py-2 font-bold text-white rounded-xl transition-all duration-300 ease-in-out focus:outline-none focus:bg-primary-700;
+  }
+
+  .btn--primary {
+    @apply bg-primary-900 text-secondary-100 shadow-lg shadow-primary-300 hover:bg-primary-800;
+  }
+  .btn--secondary {
+    /* @apply bg-secondary-900 text-white; */
+  }
+  .badge {
+    /* @apply px-2 py-1 text-xs font-bold text-white bg-primary-900 rounded-full; */
+  }
+}
+
 html,
 body {
   margin: 0;
