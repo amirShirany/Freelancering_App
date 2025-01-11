@@ -64,9 +64,13 @@ body {
 * {
   margin: 0;
   padding: 0;
-  border: none;
+  /* border: none; */
   outline: none;
   text-decoration: none;
   box-sizing: border-box;
   scroll-behavior: smooth;
+}
+
+label {
+  display: block;
 }

@@ -1,7 +1,9 @@
-const Auth = () => {
+import SendOtpForm from "../features/authentication/SendOtpForm"
+
+function Auth() {
   return (
-    <div>
-      <h1>Auth</h1>
+    <div className="w-full sm:max-w-sm mx-auto">
+      <SendOtpForm />
     </div>
   )
 }
