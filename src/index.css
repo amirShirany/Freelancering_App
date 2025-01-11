@@ -58,7 +58,7 @@
     @apply w-full py-3 px-4 rounded-xl text-secondary-900 border hover:border-primary-500 focus:outline-none focus:border-primary-500 focus:bg-white focus:shadow-lg focus:shadow-primary-200 transition-all duration-300 ease-in-out;
   }
   .btn {
-    @apply px-4 py-2 font-bold text-white rounded-xl transition-all duration-300 ease-in-out focus:outline-none focus:bg-primary-700;
+    @apply px-4 py-2 font-bold rounded-xl transition-all duration-300 ease-in-out focus:outline-none focus:bg-primary-700;
   }
 
   .btn--primary {
@@ -88,8 +88,4 @@ body {
   text-decoration: none;
   box-sizing: border-box;
   scroll-behavior: smooth;
-}
-
-label {
-  display: block;
 }
