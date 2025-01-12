@@ -1,5 +1,3 @@
-import PropTypes from "prop-types"
-
 function TextField({ name, label, value, onchange }) {
   return (
     <>
@@ -21,10 +19,3 @@ function TextField({ name, label, value, onchange }) {
   )
 }
 export default TextField
-
-TextField.propTypes = {
-  name: PropTypes.string.isRequired,
-  label: PropTypes.string.isRequired,
-  value: PropTypes.object.isRequired,
-  onchange: PropTypes.func.isRequired,
-}
