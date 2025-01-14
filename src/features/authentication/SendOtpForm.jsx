@@ -1,14 +1,11 @@
-import { useState } from "react"
-import PropTypes from "prop-types"
 import { useMutation } from "@tanstack/react-query"
 import { getOtp } from "../../services/authApi"
 import TextField from "../../ui/TextField"
 import Loading from "../../ui/Loading"
 import toast from "react-hot-toast"
 
-const SendOTPForm = ({ setStep }) => {
-  const [phoneNumber, setPhoneNumber] = useState("")
-
+// eslint-disable-next-line react/prop-types
+const SendOTPForm = ({ setStep, phoneNumber, onChange }) => {
   const { isPending, data, error, mutateAsync } = useMutation({
     mutationFn: getOtp,
   })
@@ -16,8 +13,8 @@ const SendOTPForm = ({ setStep }) => {
   const sendotpHandler = async (e) => {
     e.preventDefault()
     try {
-      const data = await mutateAsync({ phoneNumber })
-      toast.success(data?.message || "کد تایید با موفقیت ارسال شد")
+      const { message } = await mutateAsync({ phoneNumber })
+      toast.success(message)
       setStep(2)
     } catch (error) {
       toast.error(error?.response?.data?.message)
@@ -30,8 +27,8 @@ const SendOTPForm = ({ setStep }) => {
         <TextField
           label="شماره موبایل"
           name="phonenumber"
-          value={phoneNumber.trim()}
-          onchange={(e) => setPhoneNumber(e.target.value)}
+          value={phoneNumber}
+          onChange={onChange}
         />
         {isPending ? (
           <p>
@@ -48,7 +45,3 @@ const SendOTPForm = ({ setStep }) => {
 }
 
 export default SendOTPForm
-
-SendOTPForm.propTypes = {
-  setStep: PropTypes.func.isRequired,
-}

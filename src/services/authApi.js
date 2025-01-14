@@ -5,5 +5,5 @@ export function getOtp(phoneNumber) {
 }
 
 export function checkOtp(phoneNumber) {
-  return http.post("/user/check-otp", phoneNumber)
+  return http.post("/user/check-otp", phoneNumber).then((data) => data.data)
 }

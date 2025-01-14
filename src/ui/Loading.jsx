@@ -4,10 +4,10 @@ function Loading() {
   return (
     <div className="flex justify-center">
       <ClipLoader
-        color="#000000"
+        color="rgb(var(--color-primary-900))"
         loading={true}
         size={30}
-        data-testid="loader"
+        data-testid="loading"
       />
     </div>
   )
