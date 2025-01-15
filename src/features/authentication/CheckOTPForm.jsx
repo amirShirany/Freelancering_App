@@ -1,14 +1,15 @@
 import { useEffect, useState } from "react"
 import { useMutation } from "@tanstack/react-query"
 import { FaArrowRight } from "react-icons/fa6"
+import { CiEdit } from "react-icons/ci"
 import { checkOtp } from "../../services/authApi"
 import { useNavigate } from "react-router-dom"
 import OTPInput from "react-otp-input"
 import toast from "react-hot-toast"
 
 const time = 120
-// eslint-disable-next-line react/prop-types
-function CheckOTPForm({ phoneNumber, onBack, onResendOtp }) {
+
+function CheckOTPForm({ phoneNumber, onBack, onResendOtp, otpResponse }) {
   const navigate = useNavigate()
   const [otp, setOtp] = useState("")
   const [timeLeft, setTimeLeft] = useState(time) // 2 minutes in seconds
@@ -59,6 +60,16 @@ function CheckOTPForm({ phoneNumber, onBack, onResendOtp }) {
         <button onClick={onBack}>
           <FaArrowRight className="w-6 h-6 text-secondary-700 cursor-pointer" />
         </button>
+
+        {otpResponse && (
+          <p className="flex items-center gap-x-2">
+            {otpResponse.message}
+            <button onClick={onBack}>
+              <CiEdit className="w-6 h-6 text-primary-900" />
+            </button>
+          </p>
+        )}
+
         <p className="font-bold text-secondary-800">کد تایید را وارد کنید:</p>
         <OTPInput
           value={otp}
@@ -88,9 +99,13 @@ function CheckOTPForm({ phoneNumber, onBack, onResendOtp }) {
           )}
         </div>
 
-        <button type="submit" className="btn btn--primary w-full">
-          تایید
-        </button>
+        {isPending ? (
+          <Loading />
+        ) : (
+          <button type="submit" className="btn btn--primary w-full">
+            تایید
+          </button>
+        )}
       </form>
     </>
   )
