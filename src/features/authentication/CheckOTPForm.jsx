@@ -1,14 +1,18 @@
-import { useState } from "react"
+import { useEffect, useState } from "react"
 import { useMutation } from "@tanstack/react-query"
+import { FaArrowRight } from "react-icons/fa6"
 import { checkOtp } from "../../services/authApi"
 import { useNavigate } from "react-router-dom"
 import OTPInput from "react-otp-input"
 import toast from "react-hot-toast"
 
+const time = 120
 // eslint-disable-next-line react/prop-types
-function CheckOTPForm({ phoneNumber }) {
+function CheckOTPForm({ phoneNumber, onBack, onResendOtp }) {
   const navigate = useNavigate()
   const [otp, setOtp] = useState("")
+  const [timeLeft, setTimeLeft] = useState(time) // 2 minutes in seconds
+
   const { isPending, error, data, mutateAsync } = useMutation({
     mutationFn: checkOtp,
   })
@@ -34,9 +38,27 @@ function CheckOTPForm({ phoneNumber }) {
     }
   }
 
+  useEffect(() => {
+    //? setInterval is a side Effect
+    if (timeLeft === 0) return
+
+    const intervalId = setInterval(() => {
+      setTimeLeft((prevTime) => prevTime - 1)
+    }, 1000)
+
+    return () => clearInterval(intervalId)
+  }, [timeLeft])
+
+  // Convert timeLeft to minutes and seconds
+  const minutes = Math.floor(timeLeft / 60)
+  const seconds = timeLeft % 60
+
   return (
     <>
-      <form className="space-y-10" onSubmit={checkotpHandler}>
+      <form className="space-y-8" onSubmit={checkotpHandler}>
+        <button onClick={onBack}>
+          <FaArrowRight className="w-6 h-6 text-secondary-700 cursor-pointer" />
+        </button>
         <p className="font-bold text-secondary-800">کد تایید را وارد کنید:</p>
         <OTPInput
           value={otp}
@@ -55,6 +77,17 @@ function CheckOTPForm({ phoneNumber }) {
             border: "1px solid rgb(var(--color-primary-300))",
           }}
         />
+        <div className="flex justify-center">
+          {timeLeft > 0 ? (
+            <p>
+              {seconds < 10 ? `0${seconds}` : seconds} : {minutes} تا ارسال مجدد
+              کد
+            </p>
+          ) : (
+            <button onClick={onResendOtp}>ارسال مجدد کد</button>
+          )}
+        </div>
+
         <button type="submit" className="btn btn--primary w-full">
           تایید
         </button>
