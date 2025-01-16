@@ -4,10 +4,11 @@ import { FaArrowRight } from "react-icons/fa6"
 import { CiEdit } from "react-icons/ci"
 import { checkOtp } from "../../services/authApi"
 import { useNavigate } from "react-router-dom"
+import Loading from "../../ui/Loading"
 import OTPInput from "react-otp-input"
 import toast from "react-hot-toast"
 
-const time = 120
+const time = 5
 
 function CheckOTPForm({ phoneNumber, onBack, onResendOtp, otpResponse }) {
   const navigate = useNavigate()
@@ -61,9 +62,9 @@ function CheckOTPForm({ phoneNumber, onBack, onResendOtp, otpResponse }) {
           <FaArrowRight className="w-6 h-6 text-secondary-700 cursor-pointer" />
         </button>
 
-        {otpResponse && (
+        {data && (
           <p className="flex items-center gap-x-2">
-            {otpResponse.message}
+            {data.message}
             <button onClick={onBack}>
               <CiEdit className="w-6 h-6 text-primary-900" />
             </button>
@@ -89,13 +90,11 @@ function CheckOTPForm({ phoneNumber, onBack, onResendOtp, otpResponse }) {
           }}
         />
         <div className="flex justify-center">
-          {timeLeft > 0 ? (
+          {timeLeft > 0 && (
             <p>
               {seconds < 10 ? `0${seconds}` : seconds} : {minutes} تا ارسال مجدد
               کد
             </p>
-          ) : (
-            <button onClick={onResendOtp}>ارسال مجدد کد</button>
           )}
         </div>
 
@@ -103,7 +102,7 @@ function CheckOTPForm({ phoneNumber, onBack, onResendOtp, otpResponse }) {
           <Loading />
         ) : (
           <button type="submit" className="btn btn--primary w-full">
-            تایید
+            ارسال کد تایید
           </button>
         )}
       </form>

@@ -20,6 +20,31 @@ function CompleteProfileForm() {
           onchange={(e) => setEmail(e.target.value)}
           value={email}
         />
+
+        {/* Radio BTN */}
+        <div className="flex justify-center gap-x-8">
+          <div className="flex items-center gap-x-1">
+            <label htmlFor="OWNER">کارفرما</label>
+            <input
+              className="cursor-pointer w-4 h-4 accent-red-500"
+              type="radio"
+              id="OWNER"
+              name="role"
+              value="OWNER"
+            />
+          </div>
+          <div className="flex items-center gap-x-1">
+            <label htmlFor="FREELANCER">فریلنسر</label>
+            <input
+              className="cursor-pointer w-4 h-4 accent-blue-500"
+              type="radio"
+              name="role"
+              id="FREELANCER"
+              value="FREELANCER"
+            />
+          </div>
+        </div>
+
         <button className="btn btn--primary w-full">تایید</button>
       </form>
     </div>
