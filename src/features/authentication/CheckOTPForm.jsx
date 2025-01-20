@@ -8,7 +8,7 @@ import Loading from "../../ui/Loading"
 import OTPInput from "react-otp-input"
 import toast from "react-hot-toast"
 
-const time = 5
+const time = 20
 
 function CheckOTPForm({ phoneNumber, onBack, onResendOtp, otpResponse }) {
   const navigate = useNavigate()
@@ -21,22 +21,21 @@ function CheckOTPForm({ phoneNumber, onBack, onResendOtp, otpResponse }) {
 
   const checkotpHandler = async (e) => {
     e.preventDefault()
+    toast.success(data.message)
     try {
-      const { data, user } = await mutateAsync({ phoneNumber, otp })
-      console.log(data)
-      toast.success(data.message)
-      if (user.isActive) {
-        if (user.role == "FREELANCER") {
-          navigate("/freelancer")
-        } else if (user.role == "ADMIN") {
-          navigate("/admin")
-        } else {
-          navigate("/owner")
-        }
+      const { message, user } = await mutateAsync({ phoneNumber, otp })
+      toast.success(message)
+
+      if (!user.isActive) return navigate("/complete-profile")
+      if (user.status !== 2) {
+        navigate("/")
+        toast("پروفایل شما در انتظار تاییداست", { icon: "👏" })
+        return
       }
+      if (user.role === "OWNER") return navigate("/owner")
+      if (user.role === "FREELANCER") return navigate("/freelancer")
     } catch (error) {
-      navigate("/complete-profile")
-      toast.error(error?.res)
+      toast.error(error?.response?.data?.message)
     }
   }
 

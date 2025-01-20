@@ -1,43 +1,39 @@
 import { useState } from "react"
 import { completeProfile } from "../../services/authApi"
 import { useMutation } from "@tanstack/react-query"
+import { useNavigate } from "react-router-dom"
 import toast from "react-hot-toast"
 import TextField from "../../ui/TextField"
 import RadioInput from "../../ui/RadioInput"
 import Loading from "../../ui/Loading"
 
 function CompleteProfileForm() {
-  const [fullName, setFullName] = useState()
+  const navigate = useNavigate()
+
+  const [name, setName] = useState()
   const [email, setEmail] = useState()
-  const [role, setRole] = useState("")
+  const [role, setRole] = useState("FREELANCER")
   const { isPending, mutateAsync } = useMutation({
     mutationFn: completeProfile,
   })
 
   console.log(role, 111)
 
-  const handleRole = (event) => {
-    setRole(event.target.value)
-  }
-
   const handleSubmit = async (e) => {
     e.preventDefault()
     try {
-      const { data, user } = await mutateAsync({ phoneNumber, otp })
-      console.log(data)
+      const { user, data } = await mutateAsync({ name, email, role })
       toast.success(data.message)
-      if (user.isActive) {
-        if (user.role == "FREELANCER") {
-          navigate("/freelancer")
-        } else if (user.role == "ADMIN") {
-          navigate("/admin")
-        } else {
-          navigate("/owner")
-        }
+
+      if (user.status !== 2) {
+        navigate("/")
+        toast("پروفایل شما در انتظار تاییداست", { icon: "👏" })
+        return
       }
+      if (user.role === "OWNER") return navigate("/owner")
+      if (user.role === "FREELANCER") return navigate("/freelancer")
     } catch (error) {
-      navigate("/complete-profile")
-      toast.error(error?.res)
+      toast.error(error?.response?.data?.message)
     }
   }
 
@@ -47,8 +43,8 @@ function CompleteProfileForm() {
         <TextField
           label="نام و نام خانوادگی"
           name="fullName"
-          onchange={(e) => setFullName(e.target.value)}
-          value={fullName}
+          onchange={(e) => setName(e.target.value)}
+          value={name}
         />
 
         <TextField
@@ -63,20 +59,22 @@ function CompleteProfileForm() {
           <RadioInput
             label="کارفرما"
             value="OWNER"
-            onchange={handleRole}
+            onchange={(e) => setRole(e.target.value)}
             id="OWNER"
             name="role"
-            checked={role === "OWNER"}
+            // checked={role === "OWNER"}
           />
           <RadioInput
             label="فریلنسر"
             value="FREELANCER"
-            onchange={handleRole}
+            onchange={(e) => setRole(e.target.value)}
             id="FREELANCER"
             name="role"
-            checked={role === "FREELANCER"}
+            // checked={role === "FREELANCER"}
           />
         </div>
+
+        {/* btn submit */}
         {isPending ? (
           <Loading />
         ) : (

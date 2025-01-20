@@ -1,7 +1,8 @@
+// eslint-disable-next-line react/prop-types
 function RadioInput({ id, label, name, value, onChange, checked }) {
   return (
     <div className="flex items-center gap-x-1 text-secondary-600">
-      <label htmlFor="OWNER">{label}</label>
+      <label htmlFor={id}>{label}</label>
       <input
         className="cursor-pointer w-4 h-4 accent-blue-500"
         type="radio"
