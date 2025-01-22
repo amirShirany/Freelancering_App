@@ -1,10 +1,12 @@
 import { Outlet } from "react-router-dom"
+import Header from "./Header"
+import Sidebar from "./Sidebar"
 
 function AppLayout() {
   return (
     <div className="h-screen grid grid-rows-[auto,1fr] grid-cols-[15rem,1fr]">
-      <div className="bg-secondary-0 py-4 px-8">Header</div>
-      <div className="bg-secondary-200 row-start-1 row-span-2">Sidebar</div>
+      <Header />
+      <Sidebar />
 
       {/* content */}
       <div className="bg-secondary-100 overflow-y-auto">
