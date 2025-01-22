@@ -5,8 +5,8 @@ function NotFound() {
   const moveBack = useMoveBack()
 
   return (
-    <div className="h-screen bg-secondary-0">
-      <div className="container xl:max-w-screen-xl">
+    <div className="container xl:max-w-7xl">
+      <div className="h-screen bg-secondary-0">
         <div className="sm:max-w-sm flex justify-center pt-10">
           <div>
             <h1 className="text-xl font-bold text-secondary-700 mb-8">

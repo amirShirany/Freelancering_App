@@ -23,8 +23,8 @@ app.interceptors.response.use(
     console.log(err.config)
     const originalConfig = err.config
 
-    if (err.response && err.response.status === 404 && !originalConfig._retry) {
-      originalConfig._retry = true
+    if (err.response && err.response.status === 401 && !originalConfig._retry) {
+      // originalConfig._retry = true
 
       try {
         const { data } = await axios.get(`${BASE_URL}/user/refresh_token`, {
@@ -32,7 +32,6 @@ app.interceptors.response.use(
         })
 
         if (data) return app(originalConfig)
-        localStorage.setItem("token", data.token)
       } catch (error) {
         return Promise.reject(error)
       }
