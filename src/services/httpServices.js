@@ -20,17 +20,13 @@ app.interceptors.request.use(
 app.interceptors.response.use(
   (res) => res,
   async (err) => {
-    console.log(err.config)
     const originalConfig = err.config
-
-    if (err.response && err.response.status === 401 && !originalConfig._retry) {
-      // originalConfig._retry = true
-
+    if (err.response.status === 401 && !originalConfig._retry) {
+      originalConfig._retry = true
       try {
-        const { data } = await axios.get(`${BASE_URL}/user/refresh_token`, {
+        const { data } = await axios.get(`${BASE_URL}/user/refresh-token`, {
           withCredentials: true,
         })
-
         if (data) return app(originalConfig)
       } catch (error) {
         return Promise.reject(error)
