@@ -1,35 +1,34 @@
-import { useEffect, useState } from "react"
 import { useMutation } from "@tanstack/react-query"
-import { FaArrowRight } from "react-icons/fa6"
-import { CiEdit } from "react-icons/ci"
-import { checkOtp } from "../../services/authApi"
-import { useNavigate } from "react-router-dom"
-import Loading from "../../ui/Loading"
+import { useEffect, useState } from "react"
 import OTPInput from "react-otp-input"
-import toast from "react-hot-toast"
+import { checkOtp } from "../../services/authApi"
+import { toast } from "react-hot-toast"
+import { useNavigate } from "react-router-dom"
+import { HiArrowRight } from "react-icons/hi"
+import { CiEdit } from "react-icons/ci"
+import Loading from "../../ui/Loading"
+import PropTypes from "prop-types"
 
-const time = 20
+const RESEND_TIME = 90
 
-function CheckOTPForm({ phoneNumber, onBack, onResendOtp, otpResponse }) {
-  const navigate = useNavigate()
+function CheckOTPForm({ phoneNumber, onBack, onReSendOtp, otpResponse }) {
   const [otp, setOtp] = useState("")
-  const [timeLeft, setTimeLeft] = useState(time) // 2 minutes in seconds
+  const [time, setTime] = useState(RESEND_TIME)
+  const navigate = useNavigate()
 
-  const { isPending, error, data, mutateAsync } = useMutation({
+  const { isPending, mutateAsync } = useMutation({
     mutationFn: checkOtp,
   })
 
-  const checkotpHandler = async (e) => {
+  const chckOtpHandler = async (e) => {
     e.preventDefault()
-    toast.success(data.message)
     try {
-      const { message, user } = await mutateAsync({ phoneNumber, otp })
-      toast.success(message)
-
+      const { user, data } = await mutateAsync({ phoneNumber, otp })
+      toast.success(data.message)
       if (!user.isActive) return navigate("/complete-profile")
-      if (user.status !== 2) {
+      if (Number(user.status) !== 2) {
         navigate("/")
-        toast("پروفایل شما در انتظار تاییداست", { icon: "👏" })
+        toast("پروفایل شما در انتظار تایید است", { icon: "👏" })
         return
       }
       if (user.role === "OWNER") return navigate("/owner")
@@ -40,73 +39,69 @@ function CheckOTPForm({ phoneNumber, onBack, onResendOtp, otpResponse }) {
   }
 
   useEffect(() => {
-    //? setInterval is a side Effect
-    if (timeLeft === 0) return
+    const timer = time > 0 && setInterval(() => setTime((t) => t - 1), 1000)
 
-    const intervalId = setInterval(() => {
-      setTimeLeft((prevTime) => prevTime - 1)
-    }, 1000)
-
-    return () => clearInterval(intervalId)
-  }, [timeLeft])
-
-  // Convert timeLeft to minutes and seconds
-  const minutes = Math.floor(timeLeft / 60)
-  const seconds = timeLeft % 60
+    return () => {
+      if (timer) clearInterval(timer)
+    }
+  }, [time])
 
   return (
-    <>
-      <form className="space-y-8" onSubmit={checkotpHandler}>
-        <button onClick={onBack}>
-          <FaArrowRight className="w-6 h-6 text-secondary-700 cursor-pointer" />
-        </button>
-
-        {data && (
-          <p className="flex items-center gap-x-2">
-            {data.message}
-            <button onClick={onBack}>
-              <CiEdit className="w-6 h-6 text-primary-900" />
-            </button>
-          </p>
+    <div>
+      <button onClick={onBack}>
+        <HiArrowRight className="w-6 h-6 text-secondary-500" />
+      </button>
+      {otpResponse && (
+        <p className="flex items-center gap-x-2 my-4">
+          <span> {otpResponse?.message}</span>
+          <button onClick={onBack}>
+            <CiEdit className="w-6 h-6 text-primary-900" />
+          </button>
+        </p>
+      )}
+      <div className="mb-4 text-secondary-500">
+        {time > 0 ? (
+          <p> {time} ثانیه تا ارسال مجدد کد</p>
+        ) : (
+          <button onClick={onReSendOtp}>ارسال مجدد کد تایید</button>
         )}
-
-        <p className="font-bold text-secondary-800">کد تایید را وارد کنید:</p>
+      </div>
+      <form className="space-y-10" onSubmit={chckOtpHandler}>
+        <p className="font-bold text-secondary-800">کد تایید را وارد کنید</p>
         <OTPInput
           value={otp}
-          onChange={(otp) => setOtp(otp)}
+          onChange={setOtp}
           numInputs={6}
           renderSeparator={<span>-</span>}
-          renderInput={(inputProps) => <input {...inputProps} />}
-          containerStyle="flex flex-row-reverse justify-center gap-x-2"
+          renderInput={(props) => <input type="number" {...props} />}
+          containerStyle="flex flex-row-reverse gap-x-2  justify-center"
           inputStyle={{
             width: "2.5rem",
-            height: "3rem",
-            fontSize: "1.5rem",
-            textAlign: "center",
-            outline: "none",
+            padding: "0.5rem 0.2rem",
+            border: "1px solid rgb(var(--color-primary-400))",
             borderRadius: "0.5rem",
-            border: "1px solid rgb(var(--color-primary-300))",
           }}
         />
-        <div className="flex justify-center">
-          {timeLeft > 0 && (
-            <p>
-              {seconds < 10 ? `0${seconds}` : seconds} : {minutes} تا ارسال مجدد
-              کد
-            </p>
+        <div>
+          {isPending ? (
+            <Loading />
+          ) : (
+            <button type="submit" className="btn btn--primary w-full">
+              تایید
+            </button>
           )}
         </div>
-
-        {isPending ? (
-          <Loading />
-        ) : (
-          <button type="submit" className="btn btn--primary w-full">
-            ارسال کد تایید
-          </button>
-        )}
       </form>
-    </>
+    </div>
   )
 }
 
 export default CheckOTPForm
+CheckOTPForm.propTypes = {
+  phoneNumber: PropTypes.string.isRequired,
+  onBack: PropTypes.func.isRequired,
+  onReSendOtp: PropTypes.func.isRequired,
+  otpResponse: PropTypes.shape({
+    message: PropTypes.string,
+  }),
+}

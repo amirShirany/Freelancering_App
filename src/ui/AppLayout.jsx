@@ -9,8 +9,8 @@ function AppLayout() {
       <Sidebar />
 
       {/* content */}
-      <div className="bg-secondary-100 overflow-y-auto">
-        <div className="mx-auto max-w-screen-md bg-red-300 p-8">
+      <div className="bg-secondary-100 p-8 overflow-y-auto">
+        <div className="mx-auto max-w-screen-lg flex flex-col gap-y-12 bg-red-300">
           <Outlet />
         </div>
       </div>

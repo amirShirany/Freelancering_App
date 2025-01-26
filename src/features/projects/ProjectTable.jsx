@@ -1,12 +1,15 @@
 import useOwnerProjects from "./useOwnerProjects"
 import Loading from "../../ui/Loading"
 import Empty from "../../ui/Empty"
+import truncateText from "../../utils/truncateText"
+import toLocalDateShort from "../../utils/toLocalDateShort"
+import { toPersianNumbersWithComma } from "../../utils/toPersianNumbers"
 
 function ProjectTable() {
   const { projects, isLoading } = useOwnerProjects()
 
   if (isLoading) return <Loading />
-  if (!projects.length) return <Empty resourceName="پروژه" />
+  // if (!projects.length) return <Empty resourceName="درخواستی" />
 
   return (
     <div className="bg-secondary-0 overflow-x-auto">
@@ -25,20 +28,31 @@ function ProjectTable() {
           </tr>
         </thead>
         <hr />
+
         <tbody>
           {projects.map((project, index) => (
-            <tr key={index}>
+            <tr key={project._id}>
               <td>{index + 1}</td>
-              <td>{project.title}</td>
-              <td>{project.category}</td>
-              <td>{project.budget}</td>
-              <td>{project.deadline}</td>
-              <td>{project.tags.join(", ")}</td>
-              <td>{project.freelancer}</td>
-              <td>{project.status}</td>
+              <td>{truncateText(project.title, 30)}</td>
+              <td>{project.category.title}</td>
+              <td>{toPersianNumbersWithComma(project.budget)}</td>
+              <td>{toLocalDateShort(project.deadline)}</td>
+              <div className="flex flex-wrap items-center gap-2 max-w-[200px]">
+                <td>
+                  {project.tags.map((tag) => (
+                    <span className="badge badge--secondery" key={tag}>
+                      {tag}
+                    </span>
+                  ))}
+                </td>
+              </div>
+              <td>{project.freelancer?.name || "-"}</td>
               <td>
-                <button>ویرایش</button>
-                <button>حذف</button>
+                {project.status === "OPEN" ? (
+                  <span className="badge badge--success">باز</span>
+                ) : (
+                  <span className="badge badge--danger">بسته</span>
+                )}
               </td>
             </tr>
           ))}
