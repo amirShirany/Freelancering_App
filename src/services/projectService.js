@@ -23,11 +23,11 @@ export function toggleProjectStatusApi({ id, data }) {
   return http.patch(`/project/${id}`, data).then(({ data }) => data.data)
 }
 
+export function geProjectsApi(qs) {
+  return http.get(`/project/list${qs}`).then(({ data }) => data.data)
+}
+
 export function getProjectApi(id) {
   //{status:"OPEN"}
   return http.get(`/project/${id}`).then(({ data }) => data.data)
-}
-
-export function geProjectsApi(qs) {
-  return http.get(`/project/list${qs}`).then(({ data }) => data.data)
 }
