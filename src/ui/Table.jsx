@@ -1,4 +1,4 @@
-const Table = ({ children }) => {
+function Table({ children }) {
   return (
     <div className="bg-secondary-0 overflow-x-auto">
       <table>{children}</table>

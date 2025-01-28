@@ -8,10 +8,12 @@ import { toPersianNumbersWithComma } from "../../utils/toPersianNumbers"
 import { HiOutlineTrash } from "react-icons/hi"
 import { TbPencilMinus } from "react-icons/tb"
 import ConfirmDelete from "../../ui/ConfirmDelete"
+import useRemoveProject from "./useRemoveProject"
 
 function ProjectRow({ project, index }) {
   const [isEditOpen, setIsEditOpen] = useState(false)
   const [isDeleteOpen, setIsDeleteOpen] = useState(false)
+  const { removeProject, isDeleting } = useRemoveProject()
 
   return (
     <Table.Row>
@@ -50,9 +52,11 @@ function ProjectRow({ project, index }) {
                 <TbPencilMinus className="w-5 h-5 text-primary-900" />
               </button>
               <Modal
-                title={`${project.title} ویرایش`}
+                title={`ویرایش ${project.title}`}
                 open={isEditOpen}
-                onClose={() => {}}>
+                onClose={() => {
+                  setIsEditOpen(false)
+                }}>
                 <div>Are you sure you want to delete this project?</div>
               </Modal>
             </>
@@ -64,12 +68,23 @@ function ProjectRow({ project, index }) {
                 <HiOutlineTrash className="w-5 h-5 text-rose-500" />
               </button>
               <Modal
-                title={`${project.title} حذف`}
+                title={`حذف ${project.title}`}
                 open={isDeleteOpen}
-                onClose={() => {}}>
+                onClose={() => {
+                  setIsDeleteOpen(false)
+                }}>
                 <ConfirmDelete
                   resourceName={project.title}
-                  onConfirm={() => {}}
+                  onConfirm={() => {
+                    removeProject(project._id, {
+                      onSuccess: () => {
+                        setIsDeleteOpen(false)
+                      },
+                      onError: () => {
+                        setIsDeleteOpen(false)
+                      },
+                    })
+                  }}
                   onClose={() => setIsDeleteOpen(false)}
                   disabled={false}
                 />
@@ -81,6 +96,7 @@ function ProjectRow({ project, index }) {
     </Table.Row>
   )
 }
+
 ProjectRow.propTypes = {
   project: PropTypes.object.isRequired,
   index: PropTypes.number.isRequired,

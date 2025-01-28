@@ -1,18 +1,14 @@
 import { useQuery } from "@tanstack/react-query"
-import { getProjectApi } from "../../services/projectService"
-import { useParams } from "react-router-dom"
+import { getOwnerProjectsApi } from "../../services/projectService"
 
 export default function useProject() {
-  const { id } = useParams()
-
   const { data, isLoading } = useQuery({
-    queryKey: ["project", id],
-    queryFn: () => getProjectApi(id),
-
-    retry: false,
+    queryKey: "owner-projects",
+    queryFn: getOwnerProjectsApi,
   })
+  console.log({ data }, 12121)
 
-  const { project } = data || {}
+  const { projects } = data || {}
 
-  return { isLoading, project }
+  return { isLoading, projects }
 }
