@@ -1,4 +1,3 @@
-import { useState } from "react"
 import { completeProfile } from "../../services/authApi"
 import { useMutation } from "@tanstack/react-query"
 import { useNavigate } from "react-router-dom"
@@ -6,26 +5,28 @@ import toast from "react-hot-toast"
 import TextField from "../../ui/TextField"
 import RadioInput from "../../ui/RadioInput"
 import Loading from "../../ui/Loading"
+import { useForm } from "react-hook-form"
 
 function CompleteProfileForm() {
-  const navigate = useNavigate()
-
-  const [name, setName] = useState()
-  const [email, setEmail] = useState()
-  const [role, setRole] = useState("FREELANCER")
+  const {
+    handleSubmit,
+    register,
+    watch,
+    formState: { errors },
+  } = useForm()
   const { isPending, mutateAsync } = useMutation({
     mutationFn: completeProfile,
   })
+  const navigate = useNavigate()
 
-  console.log(role, 111)
+  // console.log(role, 111)
 
-  const handleSubmit = async (e) => {
-    e.preventDefault()
+  const onSubmit = async (data) => {
     try {
-      const { user, data } = await mutateAsync({ name, email, role })
-      toast.success(data.message)
+      const { user, message } = await mutateAsync(data)
+      toast.success(message)
 
-      if (user.status !== 2) {
+      if (!user.status !== 2) {
         navigate("/")
         toast("پروفایل شما در انتظار تاییداست", { icon: "👏" })
         return
@@ -39,19 +40,28 @@ function CompleteProfileForm() {
 
   return (
     <div className="w-full sm:max-w-sm">
-      <form className="space-y-8" onSubmit={handleSubmit}>
+      <h1 className="font-bold text-center text-secondary-700 text-xl mb-4">
+        تکمیل اطلاعات
+      </h1>
+      <form className="space-y-8" onSubmit={handleSubmit(onSubmit)}>
         <TextField
           label="نام و نام خانوادگی"
-          name="fullName"
-          onchange={(e) => setName(e.target.value)}
-          value={name}
+          name="name"
+          register={register}
+          // onchange={(e) => setName(e.target.value)}
+          // value={name}
+          validationSchema={{ required: "نام و نام خانوادگی ضروری است" }}
+          errors={errors}
         />
 
         <TextField
           label="ایمیل"
           name="email"
-          onchange={(e) => setEmail(e.target.value)}
-          value={email}
+          register={register}
+          // onchange={(e) => setEmail(e.target.value)}
+          // value={email}
+          validationSchema={{ required: "ایمیل ضروری است" }}
+          errors={errors}
         />
 
         {/* Radio BTN */}
@@ -59,18 +69,20 @@ function CompleteProfileForm() {
           <RadioInput
             label="کارفرما"
             value="OWNER"
-            onchange={(e) => setRole(e.target.value)}
+            register={register}
+            // onchange={(e) => watch(setRole(e.target.value))}
             id="OWNER"
             name="role"
-            // checked={role === "OWNER"}
+            watch={watch}
           />
           <RadioInput
             label="فریلنسر"
             value="FREELANCER"
-            onchange={(e) => setRole(e.target.value)}
             id="FREELANCER"
+            watch={watch}
+            register={register}
+            // onchange={(e) => watch(setRole(e.target.value))}
             name="role"
-            // checked={role === "FREELANCER"}
           />
         </div>
 
