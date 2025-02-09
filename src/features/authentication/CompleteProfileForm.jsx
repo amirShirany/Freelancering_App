@@ -3,7 +3,8 @@ import { useMutation } from "@tanstack/react-query"
 import { useNavigate } from "react-router-dom"
 import toast from "react-hot-toast"
 import TextField from "../../ui/TextField"
-import RadioInput from "../../ui/RadioInput"
+import RadioInputGroup from "../../ui/RadioInputGroup"
+// import RadioInput from "../../ui/RadioInput"
 import Loading from "../../ui/Loading"
 import { useForm } from "react-hook-form"
 
@@ -53,45 +54,47 @@ function CompleteProfileForm() {
           validationSchema={{ required: "نام و نام خانوادگی ضروری است" }}
           errors={errors}
         />
-
         <TextField
           label="ایمیل"
           name="email"
           register={register}
           // onchange={(e) => setEmail(e.target.value)}
           // value={email}
-          validationSchema={{ required: "ایمیل ضروری است" }}
+          validationSchema={{
+            required: "ایمیل ضروری است",
+            pattern: {
+              value: /^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}$/i,
+              message: "ایمیل نامعتبر است",
+            },
+          }}
           errors={errors}
         />
 
-        {/* Radio BTN */}
-        <div className="flex items-center justify-center gap-x-8">
-          <RadioInput
-            label="کارفرما"
-            value="OWNER"
-            register={register}
-            // onchange={(e) => watch(setRole(e.target.value))}
-            id="OWNER"
-            name="role"
-            watch={watch}
-          />
-          <RadioInput
-            label="فریلنسر"
-            value="FREELANCER"
-            id="FREELANCER"
-            watch={watch}
-            register={register}
-            // onchange={(e) => watch(setRole(e.target.value))}
-            name="role"
-          />
-        </div>
+        <RadioInputGroup
+          errors={errors}
+          register={register}
+          watch={watch}
+          configs={{
+            name: "role",
+            validationSchema: { required: "انتخاب نقش ضروری است" },
+            options: [
+              {
+                value: "OWNER",
+                label: "کارفرما",
+              },
+              { value: "FREELANCER", label: "فریلنسر" },
+            ],
+          }}
+        />
 
         {/* btn submit */}
-        {isPending ? (
-          <Loading />
-        ) : (
-          <button className="btn btn--primary w-full">تایید</button>
-        )}
+        <div>
+          {isPending ? (
+            <Loading />
+          ) : (
+            <button className="btn btn--primary w-full">تایید</button>
+          )}
+        </div>
       </form>
     </div>
   )
