@@ -1,0 +1,77 @@
+/* Container for the tags */
+.tag-container {
+  display: flex;
+  flex-wrap: wrap;
+  border: 2px solid #ccc;
+  padding: 8px;
+  border-radius: 10px;
+}
+
+/* Individual tag styling */
+.ReactTags__tag {
+  background-color: #4a90e2;
+  color: #fff;
+  margin: 5px;
+  padding: 7px 15px;
+  border-radius: 20px;
+  font-size: 14px;
+  display: inline-flex;
+  align-items: center;
+}
+
+/* Tag delete icon */
+.ReactTags__remove {
+  padding-right: 10px;
+  cursor: pointer;
+  font-weight: bold;
+}
+
+/* Input field styling */
+.ReactTags__tagInputField {
+  width: max-content;
+  border: none;
+  padding: 7px;
+  font-size: 14px;
+  outline: none;
+}
+
+/* Placeholder text styling */
+.ReactTags__tagInputField::placeholder {
+  color: #aaa;
+}
+
+/* Tag hover effect */
+.ReactTags__tag:hover {
+  background-color: #357ab8;
+}
+
+/* Add a subtle shadow */
+.ReactTags__tag {
+  box-shadow: 2px 2px 5px rgba(0, 0, 0, 0.1);
+  transition: transform 0.1s ease-in-out;
+}
+
+/* Scale up on hover */
+.ReactTags__tag:hover {
+  transform: scale(1.05);
+}
+
+.important-tag {
+  background-color: #e74c3c; /* A bold red for important tags */
+}
+
+.regular-tag {
+  background-color: #4a90e2; /* Default blue */
+}
+
+@media (max-width: 600px) {
+  .ReactTags__tag {
+    font-size: 12px;
+    padding: 5px 10px;
+  }
+
+  .ReactTags__tagInputField {
+    padding: 5px;
+    font-size: 12px;
+  }
+}
