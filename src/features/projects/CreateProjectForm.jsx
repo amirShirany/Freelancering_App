@@ -7,6 +7,7 @@ import RHFSelect from "../../ui/RHFSelect"
 import PropTypes from "prop-types"
 import DatePickerField from "../../ui/DatePickerField"
 import "./YourCustomStyles.css" // Import your custom styles
+import useCategories from "../../hooks/useCategories"
 
 function CreateProjectForm() {
   const {
@@ -20,6 +21,7 @@ function CreateProjectForm() {
     { id: "2", text: "React" },
   ])
   const [date, setDate] = useState(new Date())
+  const { categories, isLoading } = useCategories()
 
   const onSubmit = (data) => {
     console.log(data)
@@ -75,7 +77,7 @@ function CreateProjectForm() {
         label="دسته بندی"
         name="category"
         register={register}
-        options={[]}
+        options={categories}
         required
         errors
       />
