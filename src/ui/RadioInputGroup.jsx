@@ -1,4 +1,5 @@
 import RadioInput from "./RadioInput"
+import PropTypes from "prop-types"
 
 function RadioInputGroup({ register, watch, errors, configs }) {
   const { name, validationSchema = {}, options } = configs
@@ -28,4 +29,21 @@ function RadioInputGroup({ register, watch, errors, configs }) {
     </div>
   )
 }
+
 export default RadioInputGroup
+
+RadioInputGroup.propTypes = {
+  register: PropTypes.func.isRequired,
+  watch: PropTypes.func.isRequired,
+  errors: PropTypes.object,
+  configs: PropTypes.shape({
+    name: PropTypes.string.isRequired,
+    validationSchema: PropTypes.object,
+    options: PropTypes.arrayOf(
+      PropTypes.shape({
+        label: PropTypes.string.isRequired,
+        value: PropTypes.string.isRequired,
+      })
+    ).isRequired,
+  }).isRequired,
+}
