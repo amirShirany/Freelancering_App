@@ -42,7 +42,10 @@ function CreateProjectForm({ onClose, projectToEdit = {} }) {
 
   const [tags, setTags] = useState(
     initialTags
-      ? initialTags.map((tag, index) => ({ id: index.toString(), text: tag }))
+      ? initialTags.map((tag, index) => ({
+          id: index.toString(),
+          text: tag.text || tag,
+        }))
       : []
   )
   const [date, setDate] = useState(new Date(deadline || ""))
@@ -61,7 +64,7 @@ function CreateProjectForm({ onClose, projectToEdit = {} }) {
     if (isEditSession) {
       editProject({
         id: editId,
-        ...newProject,
+        newProject,
         onSuccess: () => {
           onClose()
           reset()
@@ -83,7 +86,7 @@ function CreateProjectForm({ onClose, projectToEdit = {} }) {
   }
 
   const handleAddition = (tag) => {
-    setTags([...tags, { id: tags.length.toString(), text: tag }])
+    setTags([...tags, { id: tags.length.toString(), text: tag.text }])
   }
 
   return (
