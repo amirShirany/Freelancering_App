@@ -40,6 +40,7 @@ const http = {
   post: app.post,
   put: app.put,
   delete: app.delete,
+  patch: app.patch,
 }
 
 export default http

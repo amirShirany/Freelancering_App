@@ -1,44 +1,80 @@
+import PropTypes from "prop-types"
 import { useState } from "react"
 import { useForm } from "react-hook-form"
-import { data } from "autoprefixer"
 import { WithContext as ReactTags } from "react-tag-input"
 import TextField from "../../ui/TextField"
 import RHFSelect from "../../ui/RHFSelect"
-import PropTypes from "prop-types"
 import DatePickerField from "../../ui/DatePickerField"
-import "./YourCustomStyles.css" // Import your custom styles
+import Loading from "../../ui/Loading"
 import useCategories from "../../hooks/useCategories"
 import useCreateProject from "./useCreateProject"
-import Loading from "../../ui/Loading"
+import useEditProject from "./useEditProject"
+import "./YourCustomStyles.css" // Import your custom styles
 
-function CreateProjectForm({ onClose }) {
+function CreateProjectForm({ onClose, projectToEdit = {} }) {
+  const { _id: editId } = projectToEdit
+  const isEditSession = Boolean(editId)
+  const {
+    title,
+    description,
+    budget,
+    category,
+    deadline,
+    tags: initialTags,
+  } = projectToEdit
+
+  let editValues = {}
+  if (isEditSession) {
+    editValues = {
+      title,
+      description,
+      budget,
+      category: category._id,
+    }
+  }
+
   const {
     register,
     formState: { errors },
     reset,
     handleSubmit,
-  } = useForm()
+  } = useForm({ defaultValues: editValues })
 
-  const [tags, setTags] = useState([
-    { id: "1", text: "JavaScript" },
-    { id: "2", text: "React" },
-  ])
-  const [date, setDate] = useState(new Date())
+  const [tags, setTags] = useState(
+    initialTags
+      ? initialTags.map((tag, index) => ({ id: index.toString(), text: tag }))
+      : []
+  )
+  const [date, setDate] = useState(new Date(deadline || ""))
+
   const { categories, isLoading } = useCategories()
-  const { isCreating, createProject } = useCreateProject()
+  const { createProject, isCreating } = useCreateProject()
+  const { editProject, isEditing } = useEditProject()
 
   const onSubmit = (data) => {
     const newProject = {
       ...data,
       deadline: new Date(date).toISOString(),
-      tags,
+      tags: tags.map((tag) => tag.text),
     }
-    createProject(newProject, {
-      onSuccess: () => {
-        onClose()
-        reset()
-      },
-    })
+
+    if (isEditSession) {
+      editProject({
+        id: editId,
+        ...newProject,
+        onSuccess: () => {
+          onClose()
+          reset()
+        },
+      })
+    } else {
+      createProject(newProject, {
+        onSuccess: () => {
+          onClose()
+          reset()
+        },
+      })
+    }
   }
 
   //tag Function
@@ -47,7 +83,7 @@ function CreateProjectForm({ onClose }) {
   }
 
   const handleAddition = (tag) => {
-    setTags([...tags, tag])
+    setTags([...tags, { id: tags.length.toString(), text: tag }])
   }
 
   return (
@@ -121,5 +157,6 @@ function CreateProjectForm({ onClose }) {
 
 export default CreateProjectForm
 CreateProjectForm.propTypes = {
-  register: PropTypes.func.isRequired,
+  onClose: PropTypes.func.isRequired,
+  projectToEdit: PropTypes.object,
 }
