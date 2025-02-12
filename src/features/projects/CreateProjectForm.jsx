@@ -8,11 +8,14 @@ import PropTypes from "prop-types"
 import DatePickerField from "../../ui/DatePickerField"
 import "./YourCustomStyles.css" // Import your custom styles
 import useCategories from "../../hooks/useCategories"
+import useCreateProject from "./useCreateProject"
+import Loading from "../../ui/Loading"
 
-function CreateProjectForm() {
+function CreateProjectForm({ onClose }) {
   const {
     register,
     formState: { errors },
+    reset,
     handleSubmit,
   } = useForm()
 
@@ -22,9 +25,20 @@ function CreateProjectForm() {
   ])
   const [date, setDate] = useState(new Date())
   const { categories, isLoading } = useCategories()
+  const { isCreating, createProject } = useCreateProject()
 
   const onSubmit = (data) => {
-    console.log(data)
+    const newProject = {
+      ...data,
+      deadline: new Date(date).toISOString(),
+      tags,
+    }
+    createProject(newProject, {
+      onSuccess: () => {
+        onClose()
+        reset()
+      },
+    })
   }
 
   //tag Function
@@ -35,51 +49,48 @@ function CreateProjectForm() {
   const handleAddition = (tag) => {
     setTags([...tags, tag])
   }
+
   return (
     <form className="space-y-8" onSubmit={handleSubmit(onSubmit)}>
       <TextField
         label="عنوان پروژه"
-        onSubmit={handleSubmit(data)}
         name="title"
         register={register}
+        required
         validationSchema={{
           required: "عنوان پروژه الزامی است",
           minLength: { value: 10, message: "حداقل 10 کاراکتر" },
         }}
-        required
-        errors
+        errors={errors}
       />
       <TextField
         label="توضیحات"
-        onSubmit={handleSubmit(data)}
         name="description"
         register={register}
-        validationSchema={{
-          required: "توضیحات پروژه الزامی است",
-          minLength: { value: 20, message: "حداقل 20 کاراکتر" },
-        }}
         required
-        errors
+        validationSchema={{
+          required: "توضیحات الزامی است",
+          minLength: { value: 15, message: "حداقل 15 کاراکتر" },
+        }}
+        errors={errors}
       />
       <TextField
         label="بودجه"
-        onSubmit={handleSubmit(data)}
-        name="price"
+        name="budget"
         register={register}
+        required
         validationSchema={{
           required: "توضیحات پروژه الزامی است",
-          minLength: { value: 20, message: "حداقل 20 کاراکتر" },
         }}
-        required
-        errors
+        errors={errors}
       />
       <RHFSelect
         label="دسته بندی"
         name="category"
         register={register}
-        options={categories}
         required
-        errors
+        options={categories}
+        errors={errors}
       />
 
       <div>
@@ -96,9 +107,14 @@ function CreateProjectForm() {
         </div>
       </div>
       <DatePickerField label="ددلاین" date={date} setDate={setDate} />
-      <button type="submit" className="btn btn--primary w-full ">
-        تایید
-      </button>
+
+      {isCreating ? (
+        <Loading />
+      ) : (
+        <button type="submit" className="btn btn--primary w-full ">
+          تایید
+        </button>
+      )}
     </form>
   )
 }

@@ -9,13 +9,13 @@ export default function useRemoveProject() {
     mutationFn: removeProjectApi,
     onSuccess: (data) => {
       toast.success(data.message)
+
       queryClient.invalidateQueries({
         queryKey: ["owner-projects"],
       })
     },
-    onError: (err) => {
-      toast.error(err?.response?.data?.message || "پروژه قابل حذف نیست")
-    },
+    onError: (err) =>
+      toast.error(err?.response?.data?.message || "پروژه قابل حذف نیست"),
   })
 
   return { removeProject, isDeleting }
