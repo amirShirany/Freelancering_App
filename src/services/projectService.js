@@ -18,7 +18,11 @@ export function editProjectApi({ id, newProject }) {
     .then((data) => data.data)
 }
 
-//? data ===> {status : "OPEN"}
+//? data contain ===> {status : "OPEN"}
 export function toggleProjectStatusApi({ id, data }) {
   return http.patch(`/project/${id}`, data).then(({ data }) => data.data)
+}
+
+export function getProjectApi(id) {
+  return http.get(`/project/${id}`).then(({ data }) => data.data)
 }

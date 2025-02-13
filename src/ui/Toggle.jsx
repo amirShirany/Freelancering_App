@@ -2,11 +2,11 @@ import { Switch, Field, Label } from "@headlessui/react"
 
 function Toggle({ label, enabled, onChange }) {
   return (
-    <div>
+    <>
       <Field className="flex items-center gap-x-2">
         <Label>{label}</Label>
         <Switch
-          checked={status === "OPEN" ? enabled : false}
+          checked={enabled}
           onChange={onChange}
           className={`${
             enabled ? "bg-primary-900" : "bg-secondary-200"
@@ -19,7 +19,7 @@ function Toggle({ label, enabled, onChange }) {
           />
         </Switch>
       </Field>
-    </div>
+    </>
   )
 }
 
