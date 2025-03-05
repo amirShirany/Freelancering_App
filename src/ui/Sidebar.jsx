@@ -26,8 +26,8 @@ function Sidebar() {
             to="/owner/projects"
             className={({ isActive }) =>
               isActive
-                ? `${navlinkClass} bg-primary-200 text-primary-900`
-                : navlinkClass
+                ? `${navlinkClass} bg-primary-100/80 text-primary-900`
+                : `${navlinkClass} text-secondary-600`
             }>
             <HiCollection />
             <span>پروژه‌ ها</span>
